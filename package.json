@@ -1,0 +1,31 @@
+{
+  "author": "Filirom1 <filirom1@gmail.com>",
+  "name": "findup",
+  "description": "Walk up ancester's dir up to root",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Filirom1/findup.git"
+  },
+  "bin": {
+    "findup": "bin/findup.js"
+  },
+  "scripts": {
+    "test": "vows test/*.js --spec"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "vows": "~0.6.2"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+ "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ]
+}
