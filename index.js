@@ -21,8 +21,8 @@ module.exports = function findup(dir, iterator, cb){
 module.exports.sync = function(dir, iteratorSync){
   if(typeof iteratorSync === 'string'){
     var file = iteratorSync;
-    iteratorSync = function(dir, cb){
-      return Path.existsSync(Path.join(dir, file), cb);
+    iteratorSync = function(dir){
+      return Path.existsSync(Path.join(dir, file));
     }
   }
   var initialDir = dir;
