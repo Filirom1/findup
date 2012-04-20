@@ -54,6 +54,16 @@ vows.describe('Test find-up')
       }
     },
 
+    'When findup in a bullshit dir': {
+      topic: function(fixtureDir){
+        findup('dsqkjfnqsdkjghq', 'toto.json', this.callback);
+      },
+
+      'Then an error is returned': function(err, file){
+        assert.isNotNull(err);
+      }
+    },
+
     'When findup a file in ancestors dir in synchronous mode': {
       topic: function(fixtureDir){
         return findup.sync(fixtureDir, 'config.json');
@@ -78,6 +88,20 @@ vows.describe('Test find-up')
       topic: function(fixtureDir){
         try{
           return findup.sync(fixtureDir, 'toto.json');
+        }catch(e){
+          return e;
+        }
+      },
+
+      'Then an error is returned': function(err){
+        assert.isNotNull(err);
+      }
+    },
+
+    'When findup in a bullshit dir in synchronous mode': {
+      topic: function(fixtureDir){
+        try{
+          return findup.sync('uhjhbjkg,nfg', 'toto.json');
         }catch(e){
           return e;
         }
