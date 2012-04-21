@@ -14,15 +14,17 @@
     "test": "vows test/*.js --spec"
   },
   "dependencies": {
+    "colors": "~0.6.0-1"
   },
   "devDependencies": {
-    "vows": "~0.6.2"
+    "vows": "~0.6.2",
+    "nopt": "http://nodeload.github.com/Filirom1/nopt/tarball/master#pull-request-in-progress"
   },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
   },
- "licenses": [
+  "licenses": [
     {
       "type": "MIT",
       "url": "http://www.opensource.org/licenses/MIT"
