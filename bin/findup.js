@@ -11,7 +11,7 @@ var findup = require('..'),
   },
   description = {
     name      : "The name of the file to found",
-    dir  : "The directoy where we will start walking up",
+    dir       : "The directoy where we will start walking up",
     help      : "show usage",
     verbose   : "print log"
 
@@ -38,7 +38,7 @@ Object.keys(defaults).forEach(function(key){
 
 if(argvRemain && argvRemain.length >=1 ) options.name = argvRemain[0];
 
-if(!options.name) {
+if(!options.name || options.help) {
   console.error('Usage: findup [FILE]');
   console.error('');
   console.error(nopt.usage(knownOpts, shortHands, description, defaults));
