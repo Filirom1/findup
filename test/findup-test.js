@@ -1,115 +1,109 @@
-var vows = require('vows'),
-  assert = require('assert'),
+var assert = require('chai').assert,
   Path = require('path'),
   fs = require('fs'),
   findup = require('..');
 
-vows.describe('Test find-up')
-.addBatch({
-  'Given a great file structure using a function': {
-    topic: Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'),
-    
-    'When findup a file in ancestors dir': {
-      topic: function(fixtureDir){
-        findup(fixtureDir, function(dir, cb){
-          return Path.exists(Path.join(dir, 'config.json'), cb);
-        }, this.callback);
-      },
+describe('find-up', function(){
+  var fixtureDir = Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a');
+  it('accept a function', function(done){
+    findup(fixtureDir, function(dir, cb){
+      return fs.exists(Path.join(dir, 'config.json'), cb);
+    }, function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+      done();
+    });
+  });
 
-      'Then the dir containing the file is returned': function(err, file){
-        assert.ifError(err);
-        assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
-      }
-    },
+  it('accept a string', function(done){
+    findup(fixtureDir, 'config.json', function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+      done();
+    });
+  });
 
-    'When findup a file in ancestors dir using a string': {
-      topic: function(fixtureDir){
-        findup(fixtureDir, 'config.json', this.callback);
-      },
+  it('is usable with the Object syntax', function(done) {
+    new findup.FindUp(fixtureDir, 'config.json', function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+      done();
+    });
+  });
 
-      'Then the dir containing the file is returned': function(err, file){
-        assert.ifError(err);
-        assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
-      }
-    },
+  it('find several files when using with the EventEmitter syntax', function(done){
+    var ee = new findup.FindUp(fixtureDir, 'config.json');
+    ee.once('found', function(file){
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
 
-    'When findup a file in top dir': {
-      topic: function(fixtureDir){
-        findup(fixtureDir, 'top.json', this.callback);
-      },
+      ee.once('found', function(file){
+        assert.equal(file, Path.join(__dirname, 'fixture'));
 
-      'Then the dir containing the file is returned': function(err, file){
-        assert.ifError(err);
-        assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
-      }
-    },
+        ee.once('end', function(){
+          done();
+        });
+      });
+    });
+  });
 
-    'When findup a non existing file': {
-      topic: function(fixtureDir){
-        findup(fixtureDir, 'toto.json', this.callback);
-      },
+  it('return files in top dir', function(done){
+    findup(fixtureDir, 'top.json', function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
+      done();
+    });
+  });
 
-      'Then an error is returned': function(err, file){
-        assert.isNotNull(err);
-      }
-    },
+  it('return files in root dir', function(done){
+    findup(fixtureDir, 'dev', function(err, file){
+      assert.ifError(err);
+      assert.equal(file, '/');
+      done();
+    });
+  });
 
-    'When findup in a bullshit dir': {
-      topic: function(fixtureDir){
-        findup('dsqkjfnqsdkjghq', 'toto.json', this.callback);
-      },
+  it('return an error when looking for non existiong files', function(done){
+    findup(fixtureDir, 'toto.json', function(err, file){
+      assert.isNotNull(err);
+      done();
+    });
+  });
 
-      'Then an error is returned': function(err, file){
-        assert.isNotNull(err);
-      }
-    },
+  it('return an error when looking in a non existing directory', function(done){
+    findup('dsqkjfnqsdkjghq', 'toto.json', function(err, file){
+      assert.isNotNull(err);
+      done();
+    });
+  });
 
-    'When findup a file in ancestors dir in synchronous mode': {
-      topic: function(fixtureDir){
-        return findup.sync(fixtureDir, 'config.json');
-      },
+  it('trigger an error event when looking in a non existing directory', function(done){
+    findup('dsqkjfnqsdkjghq', 'toto.json').on('error', function(err, files){
+      assert.isNotNull(err);
+      done();
+    });
+  });
 
-      'Then the dir containing the file is returned': function(file){
-        assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
-      }
-    },
+  describe('Sync API', function(){
+    it('accept a string', function(){
+      var file = findup.sync(fixtureDir, 'config.json');
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+    });
 
-    'When findup a file in top dir in synchronous mode': {
-      topic: function(fixtureDir){
-        return findup.sync(fixtureDir, 'top.json');
-      },
+    it('return a file in top dir', function(){
+      var file = findup.sync(fixtureDir, 'top.json');
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
+    });
 
-      'Then the dir containing the file is returned': function(file){
-        assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
-      }
-    },
+    it('throw error when looking for a non existing file', function(){
+      assert.throw(function(){
+        findup.sync(fixtureDir, 'toto.json');
+      });
+    });
 
-    'When findup a non existing file in synchronous mode': {
-      topic: function(fixtureDir){
-        try{
-          return findup.sync(fixtureDir, 'toto.json');
-        }catch(e){
-          return e;
-        }
-      },
-
-      'Then an error is returned': function(err){
-        assert.isNotNull(err);
-      }
-    },
-
-    'When findup in a bullshit dir in synchronous mode': {
-      topic: function(fixtureDir){
-        try{
-          return findup.sync('uhjhbjkg,nfg', 'toto.json');
-        }catch(e){
-          return e;
-        }
-      },
-
-      'Then an error is returned': function(err){
-        assert.isNotNull(err);
-      }
-    }
-  }
-}).exportTo(module);
+    it('throw error when looking for in a non existing directory', function(){
+      assert.throw(function(){
+        findup.sync('uhjhbjkg,nfg', 'toto.json');
+      });
+    });
+  });
+});
