@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/Filirom1/findup.png)](http://travis-ci.org/Filirom1/findup)
 Find-up
 =======
 
