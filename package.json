@@ -2,7 +2,7 @@
   "author": "Filirom1 <filirom1@gmail.com>",
   "name": "findup",
   "description": "Walk up ancester's dir up to root",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/Filirom1/findup.git"
@@ -14,7 +14,7 @@
     "test": "mocha ./test/*.js"
   },
   "dependencies": {
-    "nopt": "http://nodeload.github.com/Filirom1/nopt/tarball/master#pull-request-in-progress",
+    "nopt": "https://github.com/Filirom1/nopt/tarball/master#pull-request-in-progress",
     "colors": "~0.6.0-1"
   },
   "devDependencies": {
