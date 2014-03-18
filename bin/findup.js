@@ -1,52 +1,36 @@
 #!/usr/bin/env node
 
 var findup = require('..'),
-  Path = require('path'),
-  nopt = require('nopt'),
-  knownOpts = {
-    name      : String,
-    dir       : Path,
-    help      : Boolean,
-    verbose   : Boolean
-  },
-  description = {
-    name      : "The name of the file to found",
-    dir       : "The directoy where we will start walking up",
-    help      : "show usage",
-    verbose   : "print log"
+  path = require('path'),
+  pkg = require('../package'),
+  program = require('commander'),
+  options = {},
+  optionKeys = ['name', 'dir', 'verbose'],
+  EXIT_FAILURE = -1;
+  
+  program
+    .version(pkg.version)
+    .option('--name <name>', 'The name of the file to find', String)
+    .option('--dir <dir>', 'The directoy where we will start walking up', process.cwd(), path)
+    .option('--verbose', 'print log', false, Boolean)
+    .parse(process.argv);
 
-  },
-  defaults = {
-    dir       : process.cwd(),
-    help      : false,
-    verbose   : false
-  },
-  shortHands = {
-    d  : "--dir",
-    n  : "--name",
-    h  : "--help",
-    v  : "--verbose"
-  },
-  options = nopt(knownOpts, shortHands, process.argv, 2),
-  argvRemain = options.argv.remain;
-
-// defaults value
-Object.keys(defaults).forEach(function(key){
-  var value = defaults[key];
-  options[key] = options[key] || value;
+optionKeys.forEach(function(optionKey){
+  options[optionKey] = program[optionKey];
 });
 
-if(argvRemain && argvRemain.length >=1 ) options.name = argvRemain[0];
+if(program.args && program.args.length >=1 && !options.name){
+  options.name = program.args[0];
+}
 
-if(!options.name || options.help) {
-  console.error('Usage: findup [FILE]');
-  console.error('');
-  console.error(nopt.usage(knownOpts, shortHands, description, defaults));
-  process.exit(-1);
+if(!options.name) {
+  program.outputHelp();
+  process.exit(EXIT_FAILURE);
 }
 
 var file = options.name;
+
 findup(process.cwd(), file, options, function(err, dir){
   if(err) return console.error(err.message ? err.message : err);
-  console.log(Path.join(dir, file));
+  console.log(path.join(dir, file));
 });
