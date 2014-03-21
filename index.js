@@ -2,7 +2,9 @@ var fs   = require('fs'),
   Path   = require('path'),
   util   = require('util'),
   colors = require('colors'),
-  EE     = require('events').EventEmitter;
+  EE     = require('events').EventEmitter,
+  fsExists = fs.exists ? fs.exists : Path.exists,
+  fsExistsSync = fs.existsSync ? fs.existsSync : Path.existsSync;
 
 module.exports = function(dir, iterator, options, callback){
   return FindUp(dir, iterator, options, callback);
@@ -26,7 +28,7 @@ function FindUp(dir, iterator, options, callback){
   if(typeof iterator === 'string'){
     var file = iterator;
     iterator = function(dir, cb){
-      return fs.exists(Path.join(dir, file), cb);
+      return fsExists(Path.join(dir, file), cb);
     };
   }
 
@@ -79,7 +81,7 @@ module.exports.sync = function(dir, iteratorSync){
   if(typeof iteratorSync === 'string'){
     var file = iteratorSync;
     iteratorSync = function(dir){
-      return fs.existsSync(Path.join(dir, file));
+      return fsExistsSync(Path.join(dir, file));
     };
   }
   var initialDir = dir;

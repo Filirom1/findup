@@ -4,10 +4,11 @@ var assert = require('chai').assert,
   findup = require('..');
 
 describe('find-up', function(){
-  var fixtureDir = Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a');
+  var fixtureDir = Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'),
+    fsExists = fs.exists ? fs.exists : Path.exists;
   it('accept a function', function(done){
     findup(fixtureDir, function(dir, cb){
-      return fs.exists(Path.join(dir, 'config.json'), cb);
+      return fsExists(Path.join(dir, 'config.json'), cb);
     }, function(err, file){
       assert.ifError(err);
       assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
