@@ -64,10 +64,11 @@ FindUp.prototype._find = function(dir, iterator, options, callback){
       self.emit('found', dir);
     }
 
+    var parentDir = Path.join(dir, '..');
     if (self.stopPlease) return self.emit('end');
-    if (dir === '/') return self.emit('end');
+    if (dir === parentDir) return self.emit('end');
     if(dir.indexOf('../../') !== -1 ) return self.emit('error', new Error(dir + ' is not correct.'));
-    self._find(Path.join(dir, '..'), iterator, options, callback);
+    self._find(parentDir, iterator, options, callback);
   });
 };
 
@@ -85,7 +86,7 @@ module.exports.sync = function(dir, iteratorSync){
     };
   }
   var initialDir = dir;
-  while(dir !== '/'){
+  while(dir !== Path.join(dir, '..')){
     if(dir.indexOf('../../') !== -1 ) throw new Error(initialDir + ' is not correct.');
     if(iteratorSync(dir)) return dir;
     dir = Path.join(dir, '..');
