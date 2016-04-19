@@ -14,7 +14,6 @@
     "test": "mocha ./test/*.js"
   },
   "dependencies": {
-    "colors": "~0.6.0-1",
     "commander": "~2.1.0"
   },
   "devDependencies": {
