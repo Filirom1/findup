@@ -23,10 +23,14 @@ Find up a file in ancestor's dir
                     │   └── a
                     └── config.json
 
+### Options
+
+- `maxdepth`: (Number, default -1) How far to traverse before giving up. If maxdepth is `-1`, then there is no limit.
+
 #### Async
 
-findup(dir, fileName, callback)
-findup(dir, iterator, callback) with `iterator(dir, cb)` where cb only accept `true` or `false`
+findup(dir, fileName, options, callback)
+findup(dir, iterator, options, callback) with `iterator(dir, cb)` where cb only accept `true` or `false`
 
 ```js
 var findup = require('findup');
@@ -51,14 +55,14 @@ findup(__dirname + '/f/e/d/c/b/a', function(dir, cb){
 
 #### EventEmitter
 
-findup(dir, fileName)
+findup(dir, fileName, options)
 
 ```js
 var findup = require('findup');
 var fup = findup(__dirname + '/f/e/d/c/b/a', 'config.json');
 ```
 
-findup(dir, iterator) with `iterator(dir, cb)` where cb only accept `true` or `false`
+findup(dir, iterator, options) with `iterator(dir, cb)` where cb only accept `true` or `false`
 
 ```js
 var findup = require('findup');
