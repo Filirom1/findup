@@ -5,18 +5,23 @@ var findup = require('..'),
   pkg = require('../package'),
   program = require('commander'),
   options = {},
-  optionKeys = ['name', 'dir', 'verbose'],
+  optionKeys = ['name', 'dir', 'maxdepth', 'verbose'],
   EXIT_FAILURE = -1;
   
   program
     .version(pkg.version)
     .option('--name <name>', 'The name of the file to find', String)
     .option('--dir <dir>', 'The directoy where we will start walking up', process.cwd(), path)
+    .option('--maxdepth <levels>', 'Ascend at most <levels> levels before giving up. -1 means no limit', -1, Number)
     .option('--verbose', 'print log', false, Boolean)
     .parse(process.argv);
 
 optionKeys.forEach(function(optionKey){
-  options[optionKey] = program[optionKey];
+  if (optionKey === 'maxdepth') {
+    options[optionKey] = +program[optionKey];
+  } else {
+    options[optionKey] = program[optionKey];
+  }
 });
 
 if(program.args && program.args.length >=1 && !options.name){

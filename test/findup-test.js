@@ -106,5 +106,59 @@ describe('find-up', function(){
         findup.sync('uhjhbjkg,nfg', 'toto.json');
       });
     });
+
+    it('should work with maxdepth (top, maxdepth 0)', function(){
+      var file = findup.sync(fixtureDir, 'top.json', {maxdepth: 0});
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
+    });
+
+    it('should work with maxdepth (config, maxdepth 0)', function(){
+      try {
+        findup.sync(fixtureDir, 'config.json', {maxdepth: 0});
+      } catch (err) {
+        assert.equal(err.message, 'not found');
+      }
+    });
+
+    it('should work with maxdepth (config, maxdepth 2)', function(){
+      var file = findup.sync(fixtureDir, 'config.json', {maxdepth: 2});
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+    });
+
+    it('should work with maxdepth (config, maxdepth -1)', function(){
+      var file = findup.sync(fixtureDir, 'config.json', {maxdepth: -1});
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+    });
+  });
+
+  it('should work with maxdepth (top, maxdepth 0)', function(done){
+    findup(fixtureDir, 'top.json', {maxdepth: 0}, function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c', 'b', 'a'));
+      done();
+    });
+  });
+
+  it('should work with maxdepth (config, maxdepth 0)', function(done){
+    findup(fixtureDir, 'config.json', {maxdepth: 0}, function(err, file){
+      assert.equal(err.message, 'not found');
+      done();
+    });
+  });
+
+  it('should work with maxdepth (config, maxdepth 2)', function(done){
+    findup(fixtureDir, 'config.json', {maxdepth: 2}, function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+      done();
+    });
+  });
+
+  it('should work with maxdepth (config, maxdepth -1)', function(done){
+    findup(fixtureDir, 'config.json', {maxdepth: -1}, function(err, file){
+      assert.ifError(err);
+      assert.equal(file, Path.join(__dirname, 'fixture', 'f', 'e', 'd', 'c'));
+      done();
+    });
   });
 });

@@ -54,11 +54,16 @@ function FindUp(dir, iterator, options, callback){
 }
 util.inherits(FindUp, EE);
 
-FindUp.prototype._find = function(dir, iterator, options, callback){
+FindUp.prototype._find = function(dir, iterator, options, callback, currentDepth){
   var self = this;
+  if (typeof currentDepth !== 'number') currentDepth = 0;
 
   iterator(dir, function(exists){
     if(options.verbose) console.log(('traverse '+ dir).grey);
+    if (typeof options.maxdepth === 'number' && options.maxdepth >= 0 && currentDepth > options.maxdepth) {
+      return self.emit('end');
+    }
+    currentDepth++;
     if(exists) {
       self.found = true;
       self.emit('found', dir);
@@ -68,7 +73,7 @@ FindUp.prototype._find = function(dir, iterator, options, callback){
     if (self.stopPlease) return self.emit('end');
     if (dir === parentDir) return self.emit('end');
     if(dir.indexOf('../../') !== -1 ) return self.emit('error', new Error(dir + ' is not correct.'));
-    self._find(parentDir, iterator, options, callback);
+    self._find(parentDir, iterator, options, callback, currentDepth);
   });
 };
 
@@ -78,15 +83,21 @@ FindUp.prototype.stop = function(){
 
 module.exports.FindUp = FindUp;
 
-module.exports.sync = function(dir, iteratorSync){
+module.exports.sync = function(dir, iteratorSync, options){
   if(typeof iteratorSync === 'string'){
     var file = iteratorSync;
     iteratorSync = function(dir){
       return fsExistsSync(Path.join(dir, file));
     };
   }
+  options = options || {};
   var initialDir = dir;
+  var currentDepth = 0;
   while(dir !== Path.join(dir, '..')){
+    if (typeof options.maxdepth === 'number' && options.maxdepth >= 0 && currentDepth > options.maxdepth) {
+      break
+    }
+    currentDepth++;
     if(dir.indexOf('../../') !== -1 ) throw new Error(initialDir + ' is not correct.');
     if(iteratorSync(dir)) return dir;
     dir = Path.join(dir, '..');
