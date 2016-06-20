@@ -35,7 +35,7 @@ if(!options.name) {
 
 var file = options.name;
 
-findup(process.cwd(), file, options, function(err, dir){
+findup(options.dir, file, options, function(err, dir){
   if(err) return console.error(err.message ? err.message : err);
   console.log(path.join(dir, file));
 });
