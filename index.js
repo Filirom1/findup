@@ -1,7 +1,6 @@
 var fs   = require('fs'),
   Path   = require('path'),
   util   = require('util'),
-  colors = require('colors'),
   EE     = require('events').EventEmitter,
   fsExists = fs.exists ? fs.exists : Path.exists,
   fsExistsSync = fs.existsSync ? fs.existsSync : Path.existsSync;
@@ -34,18 +33,18 @@ function FindUp(dir, iterator, options, callback){
 
   if(callback) {
     this.on('found', function(dir){
-      if(options.verbose) console.log(('found '+ dir ).green);
+      if(options.verbose) console.log(('found '+ dir ));
       callback(null, dir);
       self.stop();
     });
 
     this.on('end', function(){
-      if(options.verbose) console.log('end'.grey);
+      if(options.verbose) console.log('end');
       if(!self.found) callback(new Error('not found'));
     });
 
     this.on('error', function(err){
-      if(options.verbose) console.log('error'.red, err);
+      if(options.verbose) console.log('error', err);
       callback(err);
     });
   }
@@ -59,7 +58,7 @@ FindUp.prototype._find = function(dir, iterator, options, callback, currentDepth
   if (typeof currentDepth !== 'number') currentDepth = 0;
 
   iterator(dir, function(exists){
-    if(options.verbose) console.log(('traverse '+ dir).grey);
+    if(options.verbose) console.log(('traverse '+ dir));
     if (typeof options.maxdepth === 'number' && options.maxdepth >= 0 && currentDepth > options.maxdepth) {
       return self.emit('end');
     }
@@ -95,7 +94,7 @@ module.exports.sync = function(dir, iteratorSync, options){
   var currentDepth = 0;
   while(dir !== Path.join(dir, '..')){
     if (typeof options.maxdepth === 'number' && options.maxdepth >= 0 && currentDepth > options.maxdepth) {
-      break
+      break;
     }
     currentDepth++;
     if(dir.indexOf('../../') !== -1 ) throw new Error(initialDir + ' is not correct.');
