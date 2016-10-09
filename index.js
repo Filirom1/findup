@@ -1,7 +1,6 @@
 var fs   = require('fs'),
   Path   = require('path'),
   util   = require('util'),
-  colors = require('colors'),
   EE     = require('events').EventEmitter,
   fsExists = fs.exists ? fs.exists : Path.exists,
   fsExistsSync = fs.existsSync ? fs.existsSync : Path.existsSync;
