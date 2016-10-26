@@ -93,14 +93,16 @@ module.exports.sync = function(dir, iteratorSync, options){
   options = options || {};
   var initialDir = dir;
   var currentDepth = 0;
-  while(dir !== Path.join(dir, '..')){
+  var parentDir = Path.resolve(dir, '..');
+  while(dir !== parentDir){
     if (typeof options.maxdepth === 'number' && options.maxdepth >= 0 && currentDepth > options.maxdepth) {
       break
     }
     currentDepth++;
     if(dir.indexOf('../../') !== -1 ) throw new Error(initialDir + ' is not correct.');
     if(iteratorSync(dir)) return dir;
-    dir = Path.join(dir, '..');
+    dir = parentDir;
+    parentDir = Path.resolve(dir, '..');
   }
   throw new Error('not found');
 };
