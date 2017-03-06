@@ -2,17 +2,11 @@ findup
 ===
 
 [![npm version](https://img.shields.io/npm/v/findup.svg)](https://npmjs.com/package/findup)
-
 [![javascript standard style](https://img.shields.io/badge/code%20style-standard-blue.svg)](http://standardjs.com/)
-
 [![travis build](https://img.shields.io/travis/Filirom1/findup/master.svg)](https://travis-ci.org/Filirom1/findup)
-
 [![coveralls coverage](https://img.shields.io/coveralls/Filirom1/findup.svg)](https://coveralls.io/github/Filirom1/findup)
-
 [![david dependencies](https://david-dm.org/Filirom1/findup.svg)](https://david-dm.org/Filirom1/findup)
-
 [![david dev dependencies](https://david-dm.org/Filirom1/findup/dev-status.svg)](https://david-dm.org/Filirom1/findup)
-
 [![greenkeeper badge](https://badges.greenkeeper.io/Filirom1/findup.svg)](https://greenkeeper.io/)
 
 `npm install findup`
