@@ -1,14 +1,10 @@
-var fs   = require('fs'),
-  Path   = require('path'),
-  util   = require('util'),
-  colors = require('colors'),
-  EE     = require('events').EventEmitter,
-  fsExists = fs.exists ? fs.exists : Path.exists,
-  fsExistsSync = fs.existsSync ? fs.existsSync : Path.existsSync;
+'use strict'
 
-module.exports = function(dir, iterator, options, callback){
-  return FindUp(dir, iterator, options, callback);
-};
+const fs = require('fs')
+const path = require('path')
+const util = require('util')
+const colors = require('colors')
+const EventEmitter = require('events').EventEmitter
 
 function FindUp(dir, iterator, options, callback){
   if (!(this instanceof FindUp)) {
@@ -52,7 +48,7 @@ function FindUp(dir, iterator, options, callback){
 
   this._find(dir, iterator, options, callback);
 }
-util.inherits(FindUp, EE);
+
 
 FindUp.prototype._find = function(dir, iterator, options, callback, currentDepth){
   var self = this;
@@ -81,9 +77,8 @@ FindUp.prototype.stop = function(){
   this.stopPlease = true;
 };
 
-module.exports.FindUp = FindUp;
 
-module.exports.sync = function(dir, iteratorSync, options){
+function findupSync (dir, iteratorSync, options){
   if(typeof iteratorSync === 'string'){
     var file = iteratorSync;
     iteratorSync = function(dir){
@@ -104,3 +99,6 @@ module.exports.sync = function(dir, iteratorSync, options){
   }
   throw new Error('not found');
 };
+
+module.exports = findup
+module.exports.sync = findupSync

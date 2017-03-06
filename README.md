@@ -1,57 +1,87 @@
-[![build status](https://secure.travis-ci.org/Filirom1/findup.png)](http://travis-ci.org/Filirom1/findup)
-Find-up
-=======
+findup
+===
 
-### Install
+[![npm version](https://img.shields.io/npm/v/findup.svg)](https://npmjs.com/package/findup)
 
-```sh
-npm install -g findup
-```
+[![javascript standard style](https://img.shields.io/badge/code%20style-standard-blue.svg)](http://standardjs.com/)
 
-### Usage
+[![travis build](https://img.shields.io/travis/Filirom1/findup/master.svg)](https://travis-ci.org/Filirom1/findup)
+
+[![coveralls coverage](https://img.shields.io/coveralls/Filirom1/findup.svg)](https://coveralls.io/github/Filirom1/findup)
+
+[![david dependencies](https://david-dm.org/Filirom1/findup.svg)](https://david-dm.org/Filirom1/findup)
+
+[![david dev dependencies](https://david-dm.org/Filirom1/findup/dev-status.svg)](https://david-dm.org/Filirom1/findup)
+
+[![greenkeeper badge](https://badges.greenkeeper.io/Filirom1/findup.svg)](https://greenkeeper.io/)
+
+`npm install findup`
 
 Find up a file in ancestor's dir
 
+- [usage](#usage)
+- [api](#api)
 
-    .
-    ├── config.json
-    └── f
-        └── e
-            └── d
-                └── c
-                    ├── b
-                    │   └── a
-                    └── config.json
+usage
+---
+
+```js
+/*
+
+  Assuming file structure:
+
+  /
+  ├── findup.js
+  ├── config.json
+  └── f
+      └── e
+          └── d
+              └── c
+                  ├── b
+                  │   └── a
+                  └── config.json
+ */
+
+// findup.js
+
+import findup from 'findup'
+import assert from 'assert'
+
+const aDir = '/f/e/d/c/b/a'
+
+// Pass a string to look for nearest directory that has the file
+findup(aDir, 'config.json', (err, dir) => {
+  if (err) return console.log(err)
+  assert(dir, '/f/e/d/c')
+})
+
+
+// Pass a function to iterate through directories
+findup(aDir, (dir, callback) => {
+  const dirEndsWithD = /d$/.test(dir)
+  // Call back with a truthy value to abort search
+  callback(null, dirEndsWithD)
+}, (err, dir) => {
+  if (err) return console.log(err)
+  assert(dir, '/f/e/d')
+})
+
+// Pass options
+findup(aDir, 'config.json', {maxdepth: 1}, (err, dir) =>[
+  assert(err.message, 'Not found')
+])
+```
+
+api
+---
+
+
+
 
 ### Options
 
 - `maxdepth`: (Number, default -1) How far to traverse before giving up. If maxdepth is `-1`, then there is no limit.
 
-#### Async
-
-findup(dir, fileName, options, callback)
-findup(dir, iterator, options, callback) with `iterator(dir, cb)` where cb only accept `true` or `false`
-
-```js
-var findup = require('findup');
-
-
-findup(__dirname + '/f/e/d/c/b/a', 'config.json', function(err, dir){
-  // if(e) e === new Error('not found')
-  // dir === '/f/e/d/c'
-});
-```
-
-or
-
-```js
-findup(__dirname + '/f/e/d/c/b/a', function(dir, cb){
-  require('path').exists(dir + '/config.json', cb);
-}, function(err, dir){
-  // if(e) e === new Error('not found')
-  // dir === '/f/e/d/c'
-});
-```
 
 #### EventEmitter
 
